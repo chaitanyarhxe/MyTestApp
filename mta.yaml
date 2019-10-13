@@ -1,8 +1,8 @@
 ID: MyTestApp
-_schema-version: "2.1"
+_schema-version: '2.1'
 version: 0.0.1
 modules:
-  - name: MyTestApp-db
+  - name: db
     type: hdb
     path: db
     parameters:
@@ -10,7 +10,7 @@ modules:
       disk-quota: 256M
     requires:
       - name: MyTestApp-db-hdi-container
-  - name: MyTestApp-srv
+  - name: srv
     type: nodejs
     path: srv
     parameters:
@@ -19,11 +19,20 @@ modules:
     provides:
       - name: srv_api
         properties:
-          url: ${default-url}
+          url: '${default-url}'
     requires:
       - name: MyTestApp-db-hdi-container
+  - name: web
+    type: html5
+    path: web
+    requires:
+      - name: MyTestApp-uaa
 resources:
   - name: MyTestApp-db-hdi-container
     type: com.sap.xs.hdi-container
     properties:
-      hdi-container-name: ${service-name}
+      hdi-container-name: '${service-name}'
+  - name: MyTestApp-uaa
+    type: com.sap.xs.uaa-space
+    parameters:
+      path: ./xs-security.json
