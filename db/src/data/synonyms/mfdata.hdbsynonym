@@ -1,0 +1,55 @@
+{
+  "AMCCODES": {
+    "target": {
+      "object": "MasterData.AMCCodes",
+      "schema": "MFSCHEMA"
+    }
+  },
+  "SchemeCodes": {
+    "target": {
+      "object": "MasterData.SchemeCodes",
+      "schema": "MFSCHEMA"
+    }
+  },
+  "AssetType": {
+    "target": {
+      "object": "MasterData.AssetType",
+      "schema": "MFSCHEMA"
+    }
+  },
+  "InvestFor": {
+    "target": {
+      "object": "MasterData.InvestFor",
+      "schema": "MFSCHEMA"
+    }
+  },
+  "SchClass": {
+    "target": {
+      "object": "MasterData.SchClass",
+      "schema": "MFSCHEMA"
+    }
+  },
+  "ProjDbCodes": {
+    "target": {
+      "object": "ProjDbCodes",
+      "schema": "MasterData"
+    }
+  },
+  "ProjDbInv": {
+    "target": {
+      "object": "ProjDbInv",
+      "schema": "MasterData"
+    }
+  },
+  "ProjDbNav": {
+    "target": {
+      "object": "ProjDbNav",
+      "schema": "MasterData"
+    }
+  },
+  "SchNameFrmCode": {
+    "target": {
+      "object": "get_scheme_name_from_code"
+    }
+  }
+}

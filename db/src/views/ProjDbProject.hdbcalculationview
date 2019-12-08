@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" id="ProjDbProject" applyPrivilegeType="NONE" dataCategory="CUBE" schemaVersion="3.0" outputViewType="Aggregation" cacheInvalidationPeriod="NONE" enforceSqlExecution="false">
+<descriptions defaultDescription="Projection for Scheme Returns"/>
+<localVariables/>
+<variableMappings/>
+<dataSources>
+  <DataSource id="ProjDbInv">
+    <resourceUri>ProjDbInv</resourceUri>
+  </DataSource>
+  <DataSource id="ProjDbCodes">
+    <resourceUri>ProjDbCodes</resourceUri>
+  </DataSource>
+  <DataSource id="SchemeCodes">
+    <resourceUri>SchemeCodes</resourceUri>
+  </DataSource>
+  <DataSource id="AMCCODES">
+    <resourceUri>AMCCODES</resourceUri>
+  </DataSource>
+  <DataSource id="ProjDbNav">
+    <resourceUri>ProjDbNav</resourceUri>
+  </DataSource>
+</dataSources>
+<calculationViews>
+  <calculationView xsi:type="Calculation:JoinView" id="TypeToSchCodes" cardinality="C1_N" joinType="inner">
+    <viewAttributes>
+      <viewAttribute id="scode" aggregationType="sum"/>
+      <viewAttribute id="dateinv"/>
+      <viewAttribute id="Pval" aggregationType="sum"/>
+      <viewAttribute hidden="true" id="JOIN$ftype$ftype"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <restrictedViewAttributes/>
+    <input node="ProjDbInv">
+      <mapping xsi:type="Calculation:AttributeMapping" target="dateinv" source="dateinv"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="Pval" source="Pval"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$ftype$ftype" source="ftype"/>
+    </input>
+    <input node="ProjDbCodes">
+      <mapping xsi:type="Calculation:AttributeMapping" target="scode" source="scode"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$ftype$ftype" source="ftype"/>
+    </input>
+    <joinAttribute name="JOIN$ftype$ftype"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="SchCodestoSchNames" cardinality="C1_1" joinType="inner">
+    <viewAttributes>
+      <viewAttribute id="scode" aggregationType="sum"/>
+      <viewAttribute id="SCHNAME"/>
+      <viewAttribute id="dateinv"/>
+      <viewAttribute id="Pval" aggregationType="sum"/>
+      <viewAttribute id="AMCCODE" aggregationType="sum"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <restrictedViewAttributes/>
+    <input node="TypeToSchCodes">
+      <mapping xsi:type="Calculation:AttributeMapping" target="scode" source="scode"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="dateinv" source="dateinv"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="Pval" source="Pval"/>
+    </input>
+    <input node="SchemeCodes">
+      <mapping xsi:type="Calculation:AttributeMapping" target="SCHNAME" source="SCHNAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="AMCCODE" source="AMCCODE"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="scode" source="SCHCODE"/>
+    </input>
+    <joinAttribute name="scode"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="SchemeNametoAMCName" cardinality="C1_1" joinType="inner">
+    <viewAttributes>
+      <viewAttribute id="scode" aggregationType="sum"/>
+      <viewAttribute id="SCHNAME"/>
+      <viewAttribute id="dateinv"/>
+      <viewAttribute id="Pval" aggregationType="sum"/>
+      <viewAttribute id="AMCNAME"/>
+      <viewAttribute hidden="true" id="JOIN$AMCCODE$AMCCODE"/>
+    </viewAttributes>
+    <calculatedViewAttributes/>
+    <restrictedViewAttributes/>
+    <input node="SchCodestoSchNames">
+      <mapping xsi:type="Calculation:AttributeMapping" target="scode" source="scode"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SCHNAME" source="SCHNAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="dateinv" source="dateinv"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="Pval" source="Pval"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$AMCCODE$AMCCODE" source="AMCCODE"/>
+    </input>
+    <input node="AMCCODES">
+      <mapping xsi:type="Calculation:AttributeMapping" target="AMCNAME" source="AMCNAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$AMCCODE$AMCCODE" source="AMCCODE"/>
+    </input>
+    <joinAttribute name="JOIN$AMCCODE$AMCCODE"/>
+  </calculationView>
+  <calculationView xsi:type="Calculation:JoinView" id="ProjSchtoNav" cardinality="C1_1" joinType="inner">
+    <viewAttributes>
+      <viewAttribute id="scode" aggregationType="sum"/>
+      <viewAttribute id="SCHNAME"/>
+      <viewAttribute id="AMCNAME"/>
+      <viewAttribute id="dateinv"/>
+      <viewAttribute id="Pval" aggregationType="sum"/>
+      <viewAttribute id="nav" aggregationType="sum"/>
+    </viewAttributes>
+    <calculatedViewAttributes>
+      <calculatedViewAttribute id="UnitsPurchased" datatype="DECIMAL" length="10" scale="3" expressionLanguage="SQL">
+        <formula>&quot;Pval&quot; / &quot;nav&quot;</formula>
+      </calculatedViewAttribute>
+      <calculatedViewAttribute id="TotalPurcVal" datatype="INTEGER" expressionLanguage="SQL">
+        <formula>&quot;Pval&quot;</formula>
+      </calculatedViewAttribute>
+    </calculatedViewAttributes>
+    <restrictedViewAttributes/>
+    <input node="SchemeNametoAMCName">
+      <mapping xsi:type="Calculation:AttributeMapping" target="scode" source="scode"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="SCHNAME" source="SCHNAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="AMCNAME" source="AMCNAME"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="dateinv" source="dateinv"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="Pval" source="Pval"/>
+    </input>
+    <input node="ProjDbNav">
+      <mapping xsi:type="Calculation:AttributeMapping" target="nav" source="nav"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="dateinv" source="fdate"/>
+      <mapping xsi:type="Calculation:AttributeMapping" target="scode" source="scode"/>
+    </input>
+    <joinAttribute name="dateinv"/>
+    <joinAttribute name="scode"/>
+  </calculationView>
+</calculationViews>
+<logicalModel id="ProjSchtoNav">
+  <attributes>
+    <attribute id="scode" order="1">
+      <descriptions defaultDescription="Scheme Code"/>
+      <keyMapping columnObjectName="ProjSchtoNav" columnName="scode"/>
+    </attribute>
+    <attribute id="SCHNAME" order="2" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Scheme Name"/>
+      <keyMapping columnObjectName="ProjSchtoNav" columnName="SCHNAME"/>
+    </attribute>
+    <attribute id="AMCNAME" order="3" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="AMC Name"/>
+      <keyMapping columnObjectName="ProjSchtoNav" columnName="AMCNAME"/>
+    </attribute>
+    <attribute id="dateinv" order="4" displayAttribute="false" attributeHierarchyActive="false">
+      <descriptions defaultDescription="Date of Investment"/>
+      <keyMapping columnObjectName="ProjSchtoNav" columnName="dateinv"/>
+    </attribute>
+    <attribute id="Pval" order="5">
+      <descriptions defaultDescription="Purchase Value"/>
+      <keyMapping columnObjectName="ProjSchtoNav" columnName="Pval"/>
+    </attribute>
+    <attribute id="nav" order="6">
+      <descriptions defaultDescription="Net Asset Value"/>
+      <keyMapping columnObjectName="ProjSchtoNav" columnName="nav"/>
+    </attribute>
+    <attribute id="UnitsPurchased" order="7">
+      <descriptions defaultDescription="Units Purchased"/>
+      <keyMapping columnObjectName="ProjSchtoNav" columnName="UnitsPurchased"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <baseMeasures>
+    <measure id="TotalPurcVal" order="8" aggregationType="sum" measureType="simple">
+      <descriptions defaultDescription="Total Purchase Value"/>
+      <measureMapping columnObjectName="ProjSchtoNav" columnName="TotalPurcVal"/>
+    </measure>
+  </baseMeasures>
+  <calculatedMeasures/>
+  <restrictedMeasures/>
+  <localDimensions/>
+</logicalModel>
+<layout>
+  <shapes>
+    <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+      <upperLeftCorner x="40" y="85"/>
+    </shape>
+  
+    <shape expanded="true" modelObjectName="TypeToSchCodes" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="106" y="400"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="ProjDbInv" modelObjectNameSpace="TypeToSchCodes" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="150" y="69"/>
+      <rectangleSize width="121.470703125"/>
+    </shape>
+    <shape modelObjectName="ProjDbCodes" modelObjectNameSpace="TypeToSchCodes" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="320" y="30"/>
+      <rectangleSize width="140.0078125"/>
+    </shape>
+    <shape expanded="true" modelObjectName="SchCodestoSchNames" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="449" y="394"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="TypeToSchCodes" modelObjectNameSpace="SchCodestoSchNames" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+    <shape modelObjectName="SchemeCodes" modelObjectNameSpace="SchCodestoSchNames" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="320" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+    <shape expanded="true" modelObjectName="SchemeNametoAMCName" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="788" y="385"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="SchCodestoSchNames" modelObjectNameSpace="SchemeNametoAMCName" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+    <shape modelObjectName="AMCCODES" modelObjectNameSpace="SchemeNametoAMCName" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="320" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+    <shape expanded="true" modelObjectName="ProjSchtoNav" modelObjectNameSpace="CalculationView">
+      <upperLeftCorner x="106" y="184"/>
+      <rectangleSize height="30" width="160"/>
+    </shape>
+    <shape modelObjectName="SchemeNametoAMCName" modelObjectNameSpace="ProjSchtoNav" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="20" y="30"/>
+      <rectangleSize width="250"/>
+    </shape>
+    <shape modelObjectName="ProjDbNav" modelObjectNameSpace="ProjSchtoNav" modelObjectType="JoinNodeInput">
+      <upperLeftCorner x="510" y="34"/>
+      <rectangleSize width="125.34765625"/>
+    </shape>
+  </shapes>
+</layout>
+</Calculation:scenario>

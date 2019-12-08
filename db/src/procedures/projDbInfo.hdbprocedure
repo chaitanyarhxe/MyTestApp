@@ -1,0 +1,47 @@
+PROCEDURE "projDbInfo"( in p_ftype NVARCHAR(100) )
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER
+   --DEFAULT SCHEMA <default_schema_name>
+   READS SQL DATA AS
+BEGIN
+   /*************************************
+       Write your procedure logic 
+   *************************************/
+   
+   SELECT pdcodes."scode" AS "Scheme Codes", 
+	TO_VARCHAR(
+		pdinv."dateinv", 
+		'DD-MM-YYYY'
+	) AS "Date of Investment", 
+	pdinv."Pval" AS "Value of Investment", 
+	pdnav."nav" AS "Net Asset Value", 
+	to_decimal(
+		pdinv."Pval" / pdnav."nav", 
+		10, 
+		3
+	) As "UnitsPurchased",
+	sum(pdinv."Pval") over (partition by pdcodes."scode" order by "dateinv") As "TotalPurchaseValue",
+	sum(	to_decimal(
+		pdinv."Pval" / pdnav."nav", 
+		10, 
+		3
+	)) over (partition by pdcodes."scode" order by "dateinv") as "TotalUnits",
+	(sum(	to_decimal(
+		pdinv."Pval" / pdnav."nav", 
+		10, 
+		3
+	)) over (partition by pdcodes."scode" order by "dateinv") * pdnav."nav") as "Current Investment Value" 
+	
+	
+	
+FROM "ProjDbInv" AS pdinv
+	INNER JOIN "ProjDbCodes" AS pdcodes
+	ON pdinv."ftype" = pdcodes."ftype"
+	INNER JOIN "ProjDbNav" AS pdnav
+	ON pdcodes."scode" = pdnav."scode"
+		AND pdinv."dateinv" = pdnav."fdate"
+		where pdinv."ftype" = :p_ftype
+		order by pdcodes."scode","dateinv";
+   
+   
+END

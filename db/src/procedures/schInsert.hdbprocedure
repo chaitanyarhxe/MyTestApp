@@ -1,0 +1,36 @@
+PROCEDURE "insert_scheme_data" ( 
+       in im_schcode integer,
+        in im_schname VARCHAR(500),
+        in im_amccode integer,
+        out ex_message nvarchar(200) ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	--DEFAULT SCHEMA <default_schema_name>
+	AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/
+
+DECLARE lcon_10001 CONDITION FOR SQL_ERROR_CODE 10001;  
+
+DECLARE EXIT HANDLER FOR lcon_10001    -- RESIGNAL
+BEGIN
+  ex_message :=  'Error Code: ' || ::SQL_ERROR_CODE || ' ' || ::SQL_ERROR_MESSAGE; 
+END;
+
+DECLARE EXIT HANDLER FOR SQLEXCEPTION   -- SQL_ERROR_CODE 301
+BEGIN
+  ex_message := 'SQL Exception occurred!!';   
+END;
+
+if :im_schcode = ' ' or :im_schname = ' ' or :im_amccode = 0 then
+SIGNAL lcon_10001 SET MESSAGE_TEXT = 'Input parameter can not be empty';  
+end if;
+
+INSERT into "MasterData.SchemeCodes" 
+          values( :im_schcode, :im_schname, :im_amccode);
+
+ex_message := 'Scheme ' || :im_schname || ' inserted successfully';  
+ 
+END
