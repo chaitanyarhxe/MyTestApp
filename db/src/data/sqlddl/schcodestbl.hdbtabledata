@@ -1,0 +1,28 @@
+{
+	"format_version": 1,
+	"imports": [{
+		"target_table": "MasterData.SchemeCodes",
+		"source_data": {
+			"data_type": "CSV",
+			"file_name": "schemecodes.csv",
+			"has_header": false,
+			"dialect": "HANA",
+			"type_config": {
+				"delimiter": ","
+			}
+		},
+		"import_settings": {
+			"include_filter": [],
+			"import_columns": ["SCHCODE",
+				"SCHNAME",
+				"AMCCODE"
+			]
+		},
+		"column_mappings": {
+			"SCHCODE": 1,
+			"SCHNAME": 2,
+			"AMCCODE": 3
+		}
+	}]
+
+}

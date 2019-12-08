@@ -10,6 +10,39 @@ modules:
       disk-quota: 256M
     requires:
       - name: MyTestApp-db-hdi-container
+        properties:
+          TARGET_CONTAINER: ~{hdi-container-name}
+
+  
+      - name: cross-container-service-1
+        group: SERVICE_REPLACEMENTS
+
+        properties:
+          key: ServiceName_1
+          service: ~{the-service-name}
+                            
+
+
+  
+      - name: cross-container-service-2
+        group: SERVICE_REPLACEMENTS
+
+        properties:
+          key: ServiceName_2
+          service: ~{the-service-name}
+                            
+
+
+  
+      - name: cross-container-service-3
+        group: SERVICE_REPLACEMENTS
+
+        properties:
+          key: ServiceName_3
+          service: ~{the-service-name}
+                            
+
+
   - name: srv
     type: nodejs
     path: srv
@@ -36,3 +69,27 @@ resources:
     type: com.sap.xs.uaa-space
     parameters:
       path: ./xs-security.json
+
+  - name: cross-container-service-1
+    parameters:
+       service-name: TESTAPP_CROSS_SCHEMA
+    properties:
+       the-service-name: ${service-name}
+    type: org.cloudfoundry.existing-service
+
+
+  - name: cross-container-service-2
+    parameters:
+       service-name: TESTAPP_CSCHEMA
+    properties:
+       the-service-name: ${service-name}
+    type: org.cloudfoundry.existing-service
+
+
+  - name: cross-container-service-3
+    parameters:
+       service-name: Test_3_cross_schema
+    properties:
+       the-service-name: ${service-name}
+    type: org.cloudfoundry.existing-service
+
